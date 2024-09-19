@@ -222,7 +222,15 @@ public class CrazyStreams {
      * @return a map where key is a letter and value is its count ignoring case in all first and last names
      */
     public Map<Character, Long> getCharacterFrequencyIgnoreCaseInFirstAndLastNames(int nameLengthBound) {
-        return null;
+        return accounts.stream()
+                .flatMap(account -> Stream.of(account.getFirstName(), account.getLastName()))
+                .filter(name -> name.length() >= nameLengthBound)
+                .map(String::toLowerCase)
+                .flatMapToInt(String::chars)
+                .mapToObj(c -> (char) c)
+                .collect(groupingBy(identity(), counting()))
+
+                ;
     }
 
 }
