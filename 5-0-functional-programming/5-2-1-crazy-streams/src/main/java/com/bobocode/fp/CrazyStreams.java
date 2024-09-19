@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import java.math.BigDecimal;
 import java.time.Month;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
@@ -30,7 +29,7 @@ import static java.util.stream.Collectors.*;
  * @author Taras Boychuk
  */
 @AllArgsConstructor
-@SuppressWarnings("JavadocReference")
+@SuppressWarnings(value = "JavadocReference")
 public class CrazyStreams {
     private Collection<Account> accounts;
 
@@ -222,8 +221,14 @@ public class CrazyStreams {
      * @return a map where key is a letter and value is its count ignoring case in all first and last names
      */
     public Map<Character, Long> getCharacterFrequencyIgnoreCaseInFirstAndLastNames(int nameLengthBound) {
-        return null;
+        return accounts.stream()
+                .flatMap(account -> Stream.of(account.getFirstName(), account.getLastName()))
+                .filter(name -> name.length() >= nameLengthBound)
+                .map(String::toLowerCase)
+                .flatMapToInt(String::chars)
+                .mapToObj(c -> (char) c)
+                .collect(groupingBy(identity(), counting()))
+                ;
     }
-
 }
 
