@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import java.math.BigDecimal;
 import java.time.Month;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
@@ -30,7 +29,7 @@ import static java.util.stream.Collectors.*;
  * @author Taras Boychuk
  */
 @AllArgsConstructor
-@SuppressWarnings("JavadocReference")
+@SuppressWarnings(value = "JavadocReference")
 public class CrazyStreams {
     private Collection<Account> accounts;
 
@@ -229,9 +228,7 @@ public class CrazyStreams {
                 .flatMapToInt(String::chars)
                 .mapToObj(c -> (char) c)
                 .collect(groupingBy(identity(), counting()))
-
                 ;
     }
-
 }
 
