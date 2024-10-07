@@ -1,7 +1,5 @@
 package com.bobocode.cs;
 
-import com.bobocode.util.ExerciseNotCompletedException;
-
 /**
  * {@link LinkedQueue} implements FIFO {@link Queue}, using singly linked nodes. Nodes are stores in instances of nested
  * class Node. In order to perform operations {@link LinkedQueue#add(Object)} and {@link LinkedQueue#poll()}
@@ -15,6 +13,23 @@ import com.bobocode.util.ExerciseNotCompletedException;
  * @author Ivan Virchenko
  */
 public class LinkedQueue<T> implements Queue<T> {
+    private Node<T> head;
+    private Node<T> tail;
+    private int size;
+
+
+    private static class Node<T> {
+        private final T value;
+        private Node<T> next;
+
+        public static <T> Node<T> of(T value) {
+            return new Node<>(value);
+        }
+
+        private Node(T value) {
+            this.value = value;
+        }
+    }
 
     /**
      * Adds an element to the end of the queue.
@@ -22,7 +37,15 @@ public class LinkedQueue<T> implements Queue<T> {
      * @param element the element to add
      */
     public void add(T element) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        Node<T> node = Node.of(element);
+        if (head == null) {
+            head = node;
+        } else {
+            tail.next = node;
+        }
+
+        tail = node;
+        size++;
     }
 
     /**
@@ -31,7 +54,19 @@ public class LinkedQueue<T> implements Queue<T> {
      * @return an element that was retrieved from the head or null if queue is empty
      */
     public T poll() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        if (head == null) {
+            return null;
+        }
+
+        Node<T> pollNode = head;
+        head = head.next;
+        if (head == null) {
+            tail = null;
+        }
+
+        pollNode.next = null;
+        size--;
+        return pollNode.value;
     }
 
     /**
@@ -40,7 +75,7 @@ public class LinkedQueue<T> implements Queue<T> {
      * @return an integer value that is a size of queue
      */
     public int size() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        return this.size;
     }
 
     /**
@@ -49,6 +84,6 @@ public class LinkedQueue<T> implements Queue<T> {
      * @return {@code true} if the queue is empty, returns {@code false} if it's not
      */
     public boolean isEmpty() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        return this.size == 0;
     }
 }
