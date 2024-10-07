@@ -32,7 +32,7 @@ public class PrimeNumbers {
      */
     public static IntStream stream() {
         return IntStream.iterate(2, x -> x + 1)
-                .filter(PrimeNumbers::isPrime); // todo: create an infinite stream of ints, then filter prime numbs
+                .filter(PrimeNumbers::isPrime);
     }
 
     /**
@@ -42,7 +42,7 @@ public class PrimeNumbers {
      * @return an int stream of prime numbers with a specified size
      */
     public static IntStream stream(int size) {
-        return stream().limit(size); // todo: use the prev to generate a stream method but limit its size
+        return stream().limit(size);
     }
 
     /**
@@ -53,7 +53,7 @@ public class PrimeNumbers {
      * @return the sum of n prime numbers
      */
     public static int sum(int n) {
-        return stream(n).sum(); // todo: use prev method and calculate the sum
+        return stream(n).sum();
 
     }
 
@@ -63,7 +63,7 @@ public class PrimeNumbers {
      * @return a list of collected prime numbers
      */
     public static List<Integer> list(int n) {
-        return stream(n).boxed().toList(); // todo: collect prime numbers into the list
+        return stream(n).boxed().toList();
     }
 
     /**
@@ -75,7 +75,7 @@ public class PrimeNumbers {
     public static void processByIndex(int idx, IntConsumer consumer) {
         stream().skip(idx)
                 .limit(1)
-                .forEach(consumer); // todo: find an element in the stream by index and process it
+                .forEach(consumer);
     }
 
     /**
@@ -91,7 +91,7 @@ public class PrimeNumbers {
     public static Map<Integer, List<Integer>> groupByAmountOfDigits(int n) {
         return stream(n)
                 .boxed()
-                .collect(groupingBy(x -> String.valueOf(x).length())); // todo: group n prime numbers by the amount of digits
+                .collect(groupingBy(x -> String.valueOf(x).length())); //
     }
 
     public static boolean isPrime(int n) {
