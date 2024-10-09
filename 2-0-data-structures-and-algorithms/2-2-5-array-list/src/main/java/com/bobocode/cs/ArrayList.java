@@ -1,6 +1,8 @@
 package com.bobocode.cs;
 
-import com.bobocode.util.ExerciseNotCompletedException;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * {@link ArrayList} is an implementation of {@link List} interface. This resizable data structure
@@ -11,7 +13,13 @@ import com.bobocode.util.ExerciseNotCompletedException;
  *
  * @author Serhii Hryhus
  */
+@SuppressWarnings("unchecked")
 public class ArrayList<T> implements List<T> {
+    private final static int DEFAULT_CAPACITY = 5;
+    private final static double COEFFICIENT_INCREASING_CAPACITY = 1.5;
+    Object[] values;
+    int capacity;
+    int size;
 
     /**
      * This constructor creates an instance of {@link ArrayList} with a specific capacity of an array inside.
@@ -20,7 +28,11 @@ public class ArrayList<T> implements List<T> {
      * @throws IllegalArgumentException – if the specified initial capacity is negative or 0.
      */
     public ArrayList(int initCapacity) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        if (initCapacity <= 0) {
+            throw new IllegalArgumentException();
+        }
+        values = new Object[initCapacity];
+        this.capacity = initCapacity;
     }
 
     /**
@@ -28,7 +40,7 @@ public class ArrayList<T> implements List<T> {
      * A default size of inner array is 5;
      */
     public ArrayList() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        this(DEFAULT_CAPACITY);
     }
 
     /**
@@ -37,8 +49,11 @@ public class ArrayList<T> implements List<T> {
      * @param elements to add
      * @return new instance
      */
+    @SafeVarargs
     public static <T> List<T> of(T... elements) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        List<T> list = new ArrayList<>(elements.length);
+        Stream.of(elements).forEach(list::add);
+        return list;
     }
 
     /**
@@ -48,7 +63,18 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public void add(T element) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        if (size == capacity) {
+            resize();
+        }
+        values[size++] = element;
+    }
+
+    private void resize() {
+        int newCapacity = (int) (capacity * COEFFICIENT_INCREASING_CAPACITY);
+        Object[] newValues = new Object[newCapacity];
+        System.arraycopy(values, 0, newValues, 0, capacity);
+        capacity = newCapacity;
+        values = newValues;
     }
 
     /**
@@ -59,7 +85,13 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public void add(int index, T element) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        Objects.checkIndex(index, size + 1);
+        if (size == capacity) {
+            resize();
+        }
+        System.arraycopy(values, index, values, index + 1, size - index);
+        values[index] = element;
+        size++;
     }
 
     /**
@@ -69,9 +101,12 @@ public class ArrayList<T> implements List<T> {
      * @param index index of element
      * @return en element
      */
+    @SuppressWarnings("unchecked")
     @Override
     public T get(int index) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        Objects.checkIndex(index, size);
+
+        return (T) values[index];
     }
 
     /**
@@ -82,7 +117,10 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public T getFirst() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        if (size == 0) {
+            throw new NoSuchElementException();
+        }
+        return (T) values[0];
     }
 
     /**
@@ -93,7 +131,10 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public T getLast() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        if (size == 0) {
+            throw new NoSuchElementException();
+        }
+        return (T) values[size - 1];
     }
 
     /**
@@ -105,7 +146,8 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public void set(int index, T element) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        Objects.checkIndex(index, size);
+        values[index] = element;
     }
 
     /**
@@ -117,7 +159,14 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public T remove(int index) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        Objects.checkIndex(index, size);
+
+        Object element = values[index];
+        System.arraycopy(values, 0, values, 0, index);
+        System.arraycopy(values, index + 1, values, index, size - (index + 1));
+        size--;
+
+        return (T) element;
     }
 
     /**
@@ -128,7 +177,16 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public boolean contains(T element) {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        if (size == 0) {
+            return false;
+        }
+
+        for (Object el : values) {
+            if (el.equals(element)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -138,7 +196,7 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public boolean isEmpty() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        return size == 0;
     }
 
     /**
@@ -146,7 +204,7 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public int size() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        return size;
     }
 
     /**
@@ -154,6 +212,6 @@ public class ArrayList<T> implements List<T> {
      */
     @Override
     public void clear() {
-        throw new ExerciseNotCompletedException(); // todo: implement this method
+        size = 0;
     }
 }
