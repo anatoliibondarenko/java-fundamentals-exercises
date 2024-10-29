@@ -1,8 +1,7 @@
 package com.bobocode.cs;
 
-import com.bobocode.util.ExerciseNotCompletedException;
-
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * {@link RecursiveBinarySearchTree} is an implementation of a {@link BinarySearchTree} that is based on a linked nodes
@@ -17,33 +16,136 @@ import java.util.function.Consumer;
  * @author Maksym Stasiuk
  */
 public class RecursiveBinarySearchTree<T extends Comparable<T>> implements BinarySearchTree<T> {
+    private Node<T> root;
+    private int size;
+    private int depth;
 
+    private static class Node<T> {
+        T value;
+        Node<T> left;
+        Node<T> right;
+
+        private Node(T value) {
+            this.value = value;
+        }
+
+        public static <T> Node<T> valueOf(T value) {
+            return new Node<>(value);
+        }
+    }
+
+    @SafeVarargs
     public static <T extends Comparable<T>> RecursiveBinarySearchTree<T> of(T... elements) {
-        throw new ExerciseNotCompletedException();
+        RecursiveBinarySearchTree<T> binarySearchTree = new RecursiveBinarySearchTree<>();
+        Stream.of(elements).forEach(binarySearchTree::insert);
+        return binarySearchTree;
     }
 
     @Override
     public boolean insert(T element) {
-        throw new ExerciseNotCompletedException();
+
+        if (root != null) {
+            return insert(root, element);
+        } else {
+            root = Node.valueOf(element);
+            size++;
+            return true;
+        }
+    }
+
+    private boolean insert(Node<T> node, T element) {
+        if (node.value.compareTo(element) > 0) {
+            if (node.left == null) {
+                node.left = Node.valueOf(element);
+                size++;
+                return true;
+            } else {
+                return insert(node.left, element);
+            }
+        } else if (node.value.compareTo(element) < 0) {
+            if (node.right == null) {
+                node.right = Node.valueOf(element);
+                size++;
+                return true;
+            } else {
+                return insert(node.right, element);
+            }
+        }
+        return false;
     }
 
     @Override
     public boolean contains(T element) {
-        throw new ExerciseNotCompletedException();
+        if (element == null) {
+            throw new NullPointerException();
+        }
+
+        Node<T> currentNode = root;
+        while (currentNode != null) {
+            int compare = element.compareTo(currentNode.value);
+            if (compare == 0) {
+                return true;
+            } else if (compare < 0) {
+                currentNode = currentNode.left;
+            } else {
+                currentNode = currentNode.right;
+            }
+        }
+        return false;
     }
 
     @Override
     public int size() {
-        throw new ExerciseNotCompletedException();
+        return size;
     }
 
     @Override
     public int depth() {
-        throw new ExerciseNotCompletedException();
+        if (root == null) {
+            return 0;
+        }
+        seekDepth(root, 0);
+        return depth;
+    }
+
+    private void seekDepth(Node<T> node, int currentDepth) {
+        int leftDepth, rightDepth;
+        leftDepth = rightDepth = currentDepth;
+
+        if (node.left != null) {
+            seekDepth(node.left, currentDepth + 1);
+        }
+
+        if (leftDepth > depth) {
+            depth = leftDepth;
+        }
+
+        if (node.right != null) {
+            seekDepth(node.right, currentDepth + 1);
+        }
+
+        if (rightDepth > depth) {
+            depth = rightDepth;
+        }
+
     }
 
     @Override
     public void inOrderTraversal(Consumer<T> consumer) {
-        throw new ExerciseNotCompletedException();
+        Node<T> node = root;
+        travers(node, consumer);
+    }
+
+    private void travers(Node<T> node, Consumer<T> consumer) {
+
+        if (node.left != null) {
+            travers(node.left, consumer);
+        }
+
+        consumer.accept(node.value);
+
+        if (node.right != null) {
+            travers(node.right, consumer);
+        }
     }
 }

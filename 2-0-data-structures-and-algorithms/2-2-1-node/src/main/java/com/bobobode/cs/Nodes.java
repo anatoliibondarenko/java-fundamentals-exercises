@@ -1,7 +1,5 @@
 package com.bobobode.cs;
 
-import com.bobocode.util.ExerciseNotCompletedException;
-
 /**
  * A class that consists of static methods only and provides util methods for {@link Node}.
  * <p><p>
@@ -22,7 +20,7 @@ public class Nodes {
      * @return a new instance of {@link Node}
      */
     public static <T> Node<T> create(T element) {
-        throw new ExerciseNotCompletedException(); // todo:
+        return new Node<>(element);
     }
 
     /**
@@ -33,7 +31,7 @@ public class Nodes {
      * @param <T>    a genetic type
      */
     public static <T> void link(Node<T> first, Node<T> second) {
-        throw new ExerciseNotCompletedException(); // todo:
+        first.setNextNode(second);
     }
 
     /**
@@ -46,7 +44,9 @@ public class Nodes {
      * @return a reference to a first node created based on firstElement
      */
     public static <T> Node<T> pairOf(T firstElement, T secondElement) {
-        throw new ExerciseNotCompletedException(); // todo:
+        Node<T> firstNode = create(firstElement);
+        link(firstNode, create(secondElement));
+        return firstNode;
     }
 
     /**
@@ -60,19 +60,22 @@ public class Nodes {
      * @return a reference to the first node
      */
     public static <T> Node<T> closedPairOf(T firstElement, T secondElement) {
-        throw new ExerciseNotCompletedException(); // todo:
+        Node<T> firstNode = pairOf(firstElement, secondElement);
+        link(firstNode.getNextNode(), firstNode);
+        return firstNode;
     }
 
     /**
      * Creates a linked chain of {@link Node} objects based on provided elements. Creates a connection between those
      * nodes so each node will hold a reference to the next one in the chain. HINT: it's basically a linked list.
      *
-     * @param elements a array of elements of type T
+     * @param elements an array of elements of type T
      * @param <T>      generic type T
      * @return a reference to the first element of the chain
      */
+    @SafeVarargs
     public static <T> Node<T> chainOf(T... elements) {
-        throw new ExerciseNotCompletedException(); // todo:
+        return helperMethodLinkingNodes(elements, false);
     }
 
     /**
@@ -80,11 +83,28 @@ public class Nodes {
      * nodes so each node will hold a reference to the next one in the chain, and the last one will hold a reference to
      * the first one.
      *
-     * @param elements a array of elements of type T
+     * @param elements an array of elements of type T
      * @param <T>      generic type T
      * @return a reference to the first element of the chain
      */
+    @SafeVarargs
     public static <T> Node<T> circleOf(T... elements) {
-        throw new ExerciseNotCompletedException(); // todo:
+        return helperMethodLinkingNodes(elements, true);
+    }
+
+    private static <T> Node<T> helperMethodLinkingNodes(T[] elements, boolean isCircle) {
+        Node<T> firstNode = create(elements[0]);
+        Node<T> prevNode = firstNode;
+
+        for (int i = 1; i < elements.length; i++) {
+            Node<T> node = create(elements[i]);
+            link(prevNode, node);
+            prevNode = node;
+        }
+
+        if (isCircle) {
+            link(prevNode, firstNode);
+        }
+        return firstNode;
     }
 }
